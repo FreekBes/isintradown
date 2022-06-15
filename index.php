@@ -1,5 +1,5 @@
 <?php
-	require_once("api.php");
+	require_once("./src/api.php");
 	$token = get_token();
 	$status = is_up($token["access_token"]);
 ?>
@@ -10,10 +10,10 @@
 		<meta http-equiv='X-UA-Compatible' content='IE=edge'>
 		<title>Is Intra down?</title>
 		<meta name='viewport' content='width=device-width, initial-scale=1'>
-		<link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+		<link rel='stylesheet' type='text/css' media='screen' href='style/main.css'>
 	</head>
 	<body>
-		<h1>Is Intra down?</h1>
+		<h1 id="title">Is Intra down?</h1>
 		Status: <?php echo ($status["online"] ? "Online" : "Offline"); ?>
 		<br>
 		Last checked: <span id="lasttime" data-timestamp="<?php echo $status["last_check"]; ?>"><?php date('l jS \of F Y h:i:s A', $status["last_check"]); ?></span>
@@ -25,5 +25,6 @@
 			const date = new Date(parseInt(timestamp) * 1000);
 			timestampElem.innerText = date.toLocaleString();
 		</script>
+		<a id="improved-intra-ad" href="https://github.com/FreekBes/improved_intra"><img src="style/assets/improved-intra-ad.png" /></a>
 	</body>
 </html>

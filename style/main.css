@@ -1,0 +1,29 @@
+body {
+	font-family: sans-serif;
+}
+
+/*
+box <- is element (multiple elements of same type)
+.box <- is class (multiple elements of same functionality)
+#box <- is id (only one element)
+a:visited <- is applied with selector: only if visited
+*/
+
+#title {
+	padding: 0.2rem 0.4rem;
+	margin: 8px 4px;
+	display: block;
+	border-radius: 4px;
+	color: white;
+	background: #3c3c4d;
+	box-shadow: 4px 4px 1px 2px #24242e;
+	text-align: center;
+}
+
+#improved-intra-ad img {
+	display: block;
+	position: fixed;
+	bottom: 10px;
+	right: 10px;
+	width: 400px;
+}

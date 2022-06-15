@@ -17,9 +17,6 @@ function get_token()
 		if ($token["expires_at"] < time() - 60)
 			return ($token);
 	}
-	else {
-		echo "Token not in shm";
-	}
 
 	$ch = curl_init();
 
@@ -36,6 +33,7 @@ function get_token()
 	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	$response = curl_exec($ch);
+
 	// Check response
 	if ($response !== false) 
 	{
