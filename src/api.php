@@ -7,14 +7,14 @@ require_once("shm.php");
 
 // Fetches the application token
 //{"access_token":"nice","token_type":"bearer","expires_in":7200,"scope":"public","created_at":1655316276}
-function get_token() 
+function get_token()
 {
 	global $clientID, $clientSecret, $shm;
 
 	if (shm_has_var($shm, 0x01))
 	{
 		$token = json_decode(unserialize(shm_get_var($shm, 0x01)), true);
-		if ($token["expires_at"] < time() - 60)
+		if ($token["expires_at"] < time() - 7200) // remove 2 hours for French timezone, just in case
 			return ($token);
 	}
 
@@ -35,16 +35,16 @@ function get_token()
 	$response = curl_exec($ch);
 
 	// Check response
-	if ($response !== false) 
+	if ($response !== false)
 	{
-		try 
+		try
 		{
 			$json = json_decode($response, true);
 			$json["expires_at"] = $json["created_at"] + $json["expires_in"];
 			shm_put_var($shm, 0x01, serialize(json_encode($json)));
 			return ($json);
 		}
-		catch (Exception $e) 
+		catch (Exception $e)
 		{
 			return (null);
 		}
@@ -64,7 +64,7 @@ function is_up($accessToken)
 		"last_check" => 0,
 		"res_time" => 0
 	);
-	
+
 	if (shm_has_var($shm, 0x02))
 	{
 		$api_status = unserialize(shm_get_var($shm, 0x02));
@@ -72,16 +72,16 @@ function is_up($accessToken)
 			return ($api_status);
 	}
 	$api_status["last_check"] = time();
-	
+
 	// Fetch the smallest and nicest thing
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL,"https://api.intra.42.fr/v2/groups/69");
 	curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer ".$accessToken));
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	
+
 	$req_start = microtime(true);
 	$response = curl_exec($ch);
-	if ($response !== false) 
+	if ($response !== false)
 	{
 		$req_end = microtime(true);
 		$api_status["res_time"] = intval(($req_end - $req_start) * 1000);
