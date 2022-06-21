@@ -1,6 +1,7 @@
 <?php
 require_once("config.php");
-require_once("shm.php");
+
+
 
 // Because french people find it funny: toto
 // hon hon hon
@@ -9,12 +10,15 @@ require_once("shm.php");
 //{"access_token":"nice","token_type":"bearer","expires_in":7200,"scope":"public","created_at":1655316276}
 function get_token()
 {
-	global $clientID, $clientSecret, $shm;
+	global $clientID, $clientSecret;
 
-	if (shm_has_var($shm, 0x01))
+	$token = array(
+		'expires_at' => ""
+	);
+
+	if (!empty($token['expires_at']))
 	{
-		$token = json_decode(unserialize(shm_get_var($shm, 0x01)), true);
-		if ($token["expires_at"] < time() - 7200) // remove 2 hours for French timezone, just in case
+		if ($token["expires_at"] < time() - 5)
 			return ($token);
 	}
 
@@ -39,10 +43,9 @@ function get_token()
 	{
 		try
 		{
-			$json = json_decode($response, true);
-			$json["expires_at"] = $json["created_at"] + $json["expires_in"];
-			shm_put_var($shm, 0x01, serialize(json_encode($json)));
-			return ($json);
+			$token = json_decode($response, true);
+			$token["expires_at"] = $token["created_at"] + $token["expires_in"];
+			return ($token);
 		}
 		catch (Exception $e)
 		{
@@ -65,9 +68,8 @@ function is_up($accessToken)
 		"res_time" => 0
 	);
 
-	if (shm_has_var($shm, 0x02))
+	if (!empty($api_status["last_check"]))
 	{
-		$api_status = unserialize(shm_get_var($shm, 0x02));
 		if ($api_status["last_check"] >= time() - 8)
 			return ($api_status);
 	}
@@ -101,7 +103,6 @@ function is_up($accessToken)
 	}
 	else
 		$api_status["online"] = false;
-	shm_put_var($shm, 0x02, serialize($api_status));
 	return ($api_status);
 }
 ?>
