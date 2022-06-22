@@ -6,7 +6,6 @@ function get_token($token)
 {
 	global $clientID, $clientSecret;
 
-	echo "lol";
 	if (!isset($token['expires_at']))
 		$token['expires_at'] = 0;
 
@@ -70,11 +69,14 @@ function is_up()
 		if ($data["expires_at"] < time() - 5 || empty($data["expires_at"]) || !isset($data["access_token"]))
 		{
             $token_data = get_token($data);
+			echo "why";
             if (!$token_data)
                 exit(1);
-            $data = array_replace($data, json_decode(json_encode($token_data), true));
-        }	
-            
+			if (isset($data["last_up"]))
+				$temp = $data["last_up"];
+            $data = json_decode(json_encode($token_data), true);
+			$data["last_up"] = $temp;
+        }	       
 	}
     $data["last_check"] = time();
     $ch = curl_init();
