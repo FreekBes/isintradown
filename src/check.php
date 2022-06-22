@@ -41,7 +41,7 @@ function get_token($token)
 	return (null);
 }
 
-function is_up()
+function is_up($group_id)
 {
     global $clientID, $clientSecret;
 
@@ -58,12 +58,12 @@ function is_up()
         $data = json_decode($data, true);
 		fclose($file);
     }
-	catch (Exception $e) {$data = array();fclose($data_file);}
+	catch (Exception $e) {$data = array();fclose($file);}
 
 	$data = get_token($data);
     $data["last_check"] = time();
     $ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL,"https://api.intra.42.fr/v2/groups/69");
+	curl_setopt($ch, CURLOPT_URL,"https://api.intra.42.fr/v2/groups/{$group_id}");
 	curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer ".$data["access_token"]));
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -95,10 +95,15 @@ function is_up()
     fclose($data_file);
 }
 
+$group_id = 0;
+
 while (1)
 {
-    is_up();
-    sleep(5);
+    is_up($group_id);
+	$group_id++;
+	if ($group_id > 69)
+		$group_id = 0;
+    sleep(10);
 }
 
 ?>
