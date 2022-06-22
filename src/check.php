@@ -6,17 +6,10 @@ function get_token($token)
 {
 	global $clientID, $clientSecret;
 
-	if (!isset($token['expires_at']))
-		$token['expires_at'] = 0;
-
-	if (!empty($token['expires_at']))
-	{
-		if ($token["expires_at"] < time() - 5)
-			return ($token);
-	}
+	if (isset($token["expires_at"]) && $token["expires_at"] > time() + 5)
+		return ($token);
 
 	$ch = curl_init();
-
 	// Setup post data
 	$postData = array(
 		"client_id" => $clientID,
@@ -37,7 +30,7 @@ function get_token($token)
 		try
 		{
 			$token = json_decode($response, true);
-			$token["expires_at"] = $token["created_at"] + $token["expires_in"];
+			$token["expires_at"] = time() + $token["expires_in"];
 			return ($token);
 		}
 		catch (Exception $e)
@@ -52,32 +45,22 @@ function is_up()
 {
     global $clientID, $clientSecret;
 
-    $data_file = fopen("data.json", "r");
-    try
-    {
-        $data = fread($data_file, filesize("data.json"));
+	$file_name = "data.json";
+	try
+	{
+		$file = fopen($file_name, "r");
+		$size = filesize($file_name);
+		if (!$size)
+			throw new Exception("bad filesize");
+		$data = fread($file, $size);
 		if (!$data)
 			throw new Exception("failed read");
         $data = json_decode($data, true);
+		fclose($file);
     }
-    catch (Exception $e) {$data = array();}
+	catch (Exception $e) {$data = array();fclose($data_file);}
 
-    // echo $data;
-    fclose($data_file);
-	if (isset($data["expires_at"]) || !isset($data["access_token"]))
-	{
-		if ($data["expires_at"] < time() - 5 || empty($data["expires_at"]) || !isset($data["access_token"]))
-		{
-            $token_data = get_token($data);
-			echo "why";
-            if (!$token_data)
-                exit(1);
-			if (isset($data["last_up"]))
-				$temp = $data["last_up"];
-            $data = json_decode(json_encode($token_data), true);
-			$data["last_up"] = $temp;
-        }	       
-	}
+	$data = get_token($data);
     $data["last_check"] = time();
     $ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL,"https://api.intra.42.fr/v2/groups/69");
