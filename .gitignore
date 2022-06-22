@@ -1,1 +1,3 @@
 config.php
+*.json
+src/data.json
