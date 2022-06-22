@@ -1,7 +1,24 @@
 <?php
-	require_once("./src/api.php");
-	$token = get_token();
-	$status = is_up($token["access_token"]);
+	$file_name = "src/data.json";
+	try
+	{
+		$file = fopen($file_name, "r");
+		$size = filesize($file_name);
+		if (!$size)
+			throw new Exception("bad filesize");
+		$data = fread($file, $size);
+		if (!$data)
+			throw new Exception("failed read");
+		$status = json_decode($data, true);
+	}
+	catch (Exception $e)
+	{
+		$status = array(
+			"online" => "false",
+			"last_check" => time(),
+			"res_time" => "check failed"
+		);
+	}
 ?>
 <!DOCTYPE html>
 <html>
