@@ -15,7 +15,9 @@ function is_up($group_id)
 			throw new Exception("get_contents failed");
         $data = json_decode($file, true);
     }
-	catch (Exception $e) { $data = array(); }
+	catch (Exception $e) { $data = array(
+		"last_up" => 0,
+	); }
 
 	$data = get_token($data);
     $data["last_check"] = time();
@@ -47,7 +49,10 @@ function is_up($group_id)
 		catch (Exception $e) { $data["online"] = false; }
 	}
 	else
+	{
 		$data["online"] = false; //curl_exec errored
+		$data["res_time"] = -1;
+	}
 
 	file_put_contents($file_name, json_encode($data, JSON_PRETTY_PRINT));
 }
