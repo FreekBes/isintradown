@@ -8,7 +8,10 @@ Type=simple
 Restart=always
 RestartSec=10
 User=intrachecker
-ExecStart=/usr/bin/env php /path/to/server/check.php
+Group=intrachecker
+#make sure to create group intrachecker + make sure the folder /path/to/isintradown is owned by this user
+WorkingDirectory=/path/to/isintradown/src
+ExecStart=/usr/bin/env php /path/to/isintradown/src/check.php
 
 [Install]
 WantedBy=multi-user.target
