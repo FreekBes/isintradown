@@ -1,0 +1,14 @@
+[Unit]
+Description=isintradown daemon
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+User=intrachecker
+ExecStart=/usr/bin/env php /path/to/server/check.php
+
+[Install]
+WantedBy=multi-user.target
