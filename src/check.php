@@ -22,24 +22,24 @@ function is_up($group_id)
 	$status = array();
 
 	//curl init;
-    $ch = curl_init();
+	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL,"https://api.intra.42.fr/v2/groups/$group_id");
 	curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer ".$data["access_token"]));
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-    $status["time"] = time();
+	$status["time"] = time();
 	$req_start = microtime(true);
 	$response = curl_exec($ch);
 	if ($response !== false)
 	{
-        $req_end = microtime(true);
-        $status["res_time"] = intval(($req_end - $req_start) * 1000);
+		$req_end = microtime(true);
+		$status["res_time"] = intval(($req_end - $req_start) * 1000);
 		try
 		{
 			// needed to check if api actually responded with a JSON
 			$json = json_decode($response, true);
 			if (array_key_exists("error", $json))
-                $status["online"] = false;
+				$status["online"] = false;
 			else
 			{
 				$status["online"] = true;
@@ -61,7 +61,7 @@ $counter = 0;
 
 while (1)
 {
-    $status = is_up($group_id);
+	$status = is_up($group_id);
 	$counter++;
 	$group_id++;
 	if ($group_id > 69)
@@ -73,6 +73,6 @@ while (1)
 		file_put_contents($file_name, json_encode($status_hist, JSON_PRETTY_PRINT)); //saves last 3 days of statuses
 		$counter = 0;
 	}
-    sleep(10);
+	sleep(10);
 }
 ?>
