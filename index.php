@@ -49,18 +49,25 @@
 
 			var options = {
 				title: 'Response Time History',
+				titleTextStyle: { color: '#EDEDED' },
 				curveType: 'function',
 				legend: 'none',
 				hAxis: {
 					showTextEvery: 24,
-					format: 'd MMM HH:mm'
+					format: 'd MMM HH:mm',
+					textStyle: { color: '#8D8D8D' },
+					gridlines: { color: '#34343e' }
 				},
 				vAxis: {
 					minValue: 0,
-					format: '#ms'
+					format: '#ms',
+					textStyle: { color: '#8D8D8D' },
+					gridlines: { color: '#44444e' }
 				},
 				width: window.innerWidth,
-				height: 500
+				height: 500,
+				backgroundColor: '#24242e',
+				colors: [ '#00babc' ]
 			};
 
 			var chart = new google.visualization.LineChart(document.getElementById('res_time_chart'));
@@ -70,11 +77,13 @@
 	</head>
 	<body>
 		<h1 id="title">Is Intra down?</h1>
-		Status: <?php echo ($status["online"] ? "Online" : "Offline"); ?>
-		<br>
-		Last checked: <span id="lasttime" data-timestamp="<?php echo $status["time"]; ?>"><?php date('l jS \of F Y h:i:s A', $status["time"]); ?></span>
-		<br>
-		Last response time: <?php echo $status["res_time"]; ?>ms
+		<p>
+			Status: <span id="status" style="color: <?php echo ($status["online"] ? "lightgreen" : "red"); ?>;"><?php echo ($status["online"] ? "Online" : "Offline"); ?></span>
+			<br>
+			Last checked: <span id="lasttime" data-timestamp="<?php echo $status["time"]; ?>"><?php date('l jS \of F Y h:i:s A', $status["time"]); ?></span>
+			<br>
+			Last response time: <?php echo $status["res_time"]; ?>ms
+		</p>
 		<script>
 			const timestampElem = document.getElementById("lasttime");
 			const timestamp = timestampElem.getAttribute("data-timestamp");
