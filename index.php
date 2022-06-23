@@ -1,24 +1,16 @@
 <?php
-	$file_name = "src/data.json";
-	try
-	{
-		$file = fopen($file_name, "r");
-		$size = filesize($file_name);
-		if (!$size)
-			throw new Exception("bad filesize");
-		$data = fread($file, $size);
-		if (!$data)
-			throw new Exception("failed read");
-		$status = json_decode($data, true);
-	}
-	catch (Exception $e)
+	$file_name = "status.json";
+	$status = file_get_contents($file_name);
+	if ($status == false)
 	{
 		$status = array(
-			"online" => "false",
-			"last_check" => time(),
-			"res_time" => "check failed"
+			"time" => 0,
+			"online" => false,
+			"res_time" => -1
 		);
 	}
+	else
+		$status = json_decode($status, true);
 ?>
 <!DOCTYPE html>
 <html>
@@ -33,7 +25,7 @@
 		<h1 id="title">Is Intra down?</h1>
 		Status: <?php echo ($status["online"] ? "Online" : "Offline"); ?>
 		<br>
-		Last checked: <span id="lasttime" data-timestamp="<?php echo $status["last_check"]; ?>"><?php date('l jS \of F Y h:i:s A', $status["last_check"]); ?></span>
+		Last checked: <span id="lasttime" data-timestamp="<?php echo $status["time"]; ?>"><?php date('l jS \of F Y h:i:s A', $status["time"]); ?></span>
 		<br>
 		Last response time: <?php echo $status["res_time"]; ?>ms
 		<script>
