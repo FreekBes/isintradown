@@ -2,6 +2,8 @@ body {
 	font-family: sans-serif;
 	color: #EDEDED;
 	background: #14141e;
+	margin: 0;
+	padding: 0;
 }
 
 /*
@@ -24,6 +26,7 @@ a:visited <- is applied with selector: only if visited
 
 p {
 	font-size: large;
+	margin: 16px 16px;
 }
 
 #status {
