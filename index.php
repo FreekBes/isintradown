@@ -26,36 +26,44 @@
 		google.charts.setOnLoadCallback(drawChart);
 
 		function drawChart() {
-			// var data = google.visualization.arrayToDataTable([
-			// ['Year', 'Sales', 'Expenses'],
-			// ['2004',  1000,      400],
-			// ['2005',  1170,      460],
-			// ['2006',  660,       1120],
-			// ['2007',  1030,      540]
-			// ]);
-
-			var data = google.visualization.arrayToDataTable(<?php
+			var source = <?php
 				$history = file_get_contents("history.json");
 				$history_data = array(array('Time', 'Response Time'));
 				if ($history !== false)
 				{
-					$json_history = json_decode($history, true);
+					$json_history = array_reverse(json_decode($history, true));
 					foreach ($json_history as &$status_item)
 						array_push($history_data, array(date("Y-m-d H:i:s", $status_item["time"]), $status_item["res_time"]));
 				}
-					
-				echo json_encode($history_data, JSON_PRETTY_PRINT);
-			?>);
+
+				echo json_encode($history_data);
+			?>;
+			for (var i = 1; i < source.length; i++) {
+				source[i][0] = new Date(source[i][0]);
+			}
+			var data = google.visualization.arrayToDataTable(source);
+			var dateFormatter = new google.visualization.DateFormat({ pattern: 'd MMMM, HH:mm' });
+			var msFormatter = new google.visualization.NumberFormat({ pattern: '#ms' });
+			dateFormatter.format(data, 0);
+			msFormatter.format(data, 1);
 
 			var options = {
-				title: 'Response time',
+				title: 'Response Time History',
 				curveType: 'function',
-				legend: { position: 'bottom' },
-				hAxis: { showTextEvery: 5 },
-				vAxis: { minValue: 0}
+				legend: 'none',
+				hAxis: {
+					showTextEvery: 24,
+					format: 'd MMM HH:mm'
+				},
+				vAxis: {
+					minValue: 0,
+					format: '#ms'
+				},
+				width: window.innerWidth,
+				height: 500
 			};
 
-			var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+			var chart = new google.visualization.LineChart(document.getElementById('res_time_chart'));
 			chart.draw(data, options);
 		}
 		</script>
@@ -73,7 +81,7 @@
 			const date = new Date(parseInt(timestamp) * 1000);
 			timestampElem.innerText = date.toLocaleString();
 		</script>
-		<div id="curve_chart" style="width: 900px; height: 500px"></div>
+		<div id="res_time_chart"></div>
 		<a id="improved-intra-ad" href="https://github.com/FreekBes/improved_intra"><img src="style/assets/improved-intra-ad.png" /></a>
 	</body>
 </html>
