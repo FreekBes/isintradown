@@ -65,7 +65,7 @@ while (1)
 	$avg_res_time += ($status["online"] ? $status["res_time"] : 0);
 	if ($group_id > 69)
 		$group_id = 0;
-	if ($counter == $save_every_runs || $counter == 1) //saves every so many runs
+	if ($counter == $save_every_runs) //saves every so many runs
 	{
 		$status["res_time"] = round($avg_res_time / $save_every_runs); //replace res_time fetched with the average response time
 		array_unshift($status_hist, $status); //add to front of history array
