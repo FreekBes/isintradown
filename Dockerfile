@@ -1,7 +1,7 @@
 FROM php:7.4-fpm-alpine
 
 COPY . .
-
+EXPOSE 8080
 ENTRYPOINT [ "sh" , "./entrypoint.sh" ]
 
 # To start, run inside the root of this repo
