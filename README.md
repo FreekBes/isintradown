@@ -5,4 +5,6 @@ Very much a work in progress
 
 
 ## Running (in development mode)
-Just run `php -S localhost:8080` in the root folder
+Add your intra credentials to `./src/config.php`
+Run `php -S localhost:8080` for the website
+Run `env php src/check.php` for the history (saved to `history.json`)
