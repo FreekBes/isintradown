@@ -1,2 +1,3 @@
 config.php
 *.json
+.DS_Store*
