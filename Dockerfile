@@ -1,5 +1,7 @@
 FROM php:7.4-fpm-alpine
 
+WORKDIR /root/
+
 COPY . .
 EXPOSE 8080
 ENTRYPOINT [ "sh" , "./entrypoint.sh" ]
