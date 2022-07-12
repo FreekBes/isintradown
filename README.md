@@ -1,5 +1,6 @@
 # isintradown
 Very much a work in progress
+todo: check website as well
 
 [isintradown.fr](https://isintradown.fr)
 
